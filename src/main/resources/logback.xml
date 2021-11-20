@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- 定义参数常量 -->
+    <!-- 日志级别 TRACE<DEBUG<INFO<WARN<ERROR -->
+    <!-- logger.trace("msg") logger.debug... -->
+    <property name="log.level" value="debug"/>
+    <property name="log.maxHistory" value="30"/>
+    <property name="log.filePath" value="D:/log"/>
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+    <!-- 控制台输出设置 -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    <!-- DEBUG级别文件记录 -->
+    <appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${log.filePath}/debug.log</file>
+        <!-- 滚动日志文件类型，就是每天都会有一个日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${log.filePath}/debug/debug.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <maxHistory>${log.maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- INFO -->
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${log.filePath}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${log.filePath}/info/info.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <maxHistory>${log.maxHistory}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- com.xinzhi开头的日志对应形式 -->
+    <logger name="top.linzeliang" level="${log.level}" additivity="true">
+        <appender-ref ref="debugAppender"/>
+        <appender-ref ref="infoAppender"/>
+    </logger>
+    <!-- <root> 是必选节点，用来指定最基础的日志输出级别，只有一个level属性 -->
+    <root level="info">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+    <!-- 捕捉sql开头的日志 -->
+    <appender name="MyBatis" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.filePath}/sql_log/mybatis-sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.filePath}/sql_log/mybatis-sql.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%thread|%d{yyyy-MM-dd
+                HH:mm:ss.SSS}|%level|%logger{36}|%m%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="sql" level="DEBUG">
+        <appender-ref ref="MyBatis"/>
+    </logger>
+</configuration>

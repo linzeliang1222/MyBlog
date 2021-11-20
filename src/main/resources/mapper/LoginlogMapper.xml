@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.LoginlogMapper">
+
+    <insert id="writeLoginlog" parameterType="loginlog">
+        insert into blog_loginlog (loginlog_user_id,
+                                   loginlog_user_password,
+                                   loginlog_ip,
+                                   loginlog_time)
+        values (#{loginlogUserId},
+                #{loginlogUserPassword},
+                #{loginlogIp},
+                #{loginlogTime});
+    </insert>
+
+    <select id="queryAllLoginlogs" resultType="loginlog">
+        select loginlog_user_id,
+               loginlog_user_password,
+               loginlog_ip,
+               loginlog_time
+        from blog_loginlog;
+    </select>
+
+    <select id="queryLoginlogBasedOnUserId" resultType="loginlog">
+        select loginlog_user_id,
+               loginlog_user_password,
+               loginlog_ip,
+               loginlog_time
+        from blog_loginlog
+        where loginlog_user_id = #{userId}
+    </select>
+
+    <select id="queryLoginlogForACertainPeriodOfTime" resultType="loginlog">
+        select loginlog_user_id,
+               loginlog_user_password,
+               loginlog_ip,
+               loginlog_time
+        from blog_loginlog
+        where loginlog_time >= #{start}
+          and loginlog_time <![CDATA[<=]]> #{end}
+    </select>
+
+    <select id="getTheNumberOfLoginlogs" resultType="int">
+        select count(*)
+        from blog_loginlog;
+    </select>
+</mapper>

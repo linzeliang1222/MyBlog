@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.CommentMapper">
+
+    <insert id="insertComment" parameterType="comment">
+        insert into blog_comment (comment_username,
+                                  comment_content,
+                                  comment_ip,
+                                  comment_parent_id,
+                                  comment_base_id,
+                                  comment_create_time,
+                                  comment_place,
+                                  comment_type,
+                                  comment_article_id)
+        values (#{commentUsername},
+                #{commentContent},
+                #{commentIp},
+                #{commentParentId},
+                #{commentBaseId},
+                #{commentCreateTime},
+                #{commentPlace},
+                #{commentType},
+                #{commentArticleId})
+    </insert>
+
+    <delete id="deleteComment" parameterType="int">
+        delete
+        from blog_comment
+        where comment_id = #{commentId}
+    </delete>
+
+    <select id="listCommentsByType" resultType="comment">
+        select comment_id,
+               comment_username,
+               comment_content,
+               comment_ip,
+               comment_parent_id,
+               comment_base_id,
+               comment_create_time,
+               comment_place,
+               comment_type,
+               comment_article_id
+        from blog_comment
+        where comment_type = #{type}
+        order by comment_create_time asc
+    </select>
+
+    <select id="getCommentById" resultType="comment">
+        select comment_id,
+               comment_username,
+               comment_content,
+               comment_ip,
+               comment_parent_id,
+               comment_base_id,
+               comment_create_time,
+               comment_place,
+               comment_type,
+               comment_article_id
+        from blog_comment
+        where comment_id = #{commentId}
+    </select>
+
+    <select id="getTheTotalNumberOfComments" resultType="int">
+        select count(*)
+        from blog_comment
+        where comment_type = #{type}
+    </select>
+
+    <select id="listCommentsByArticle" resultType="comment">
+        select comment_id,
+               comment_username,
+               comment_content,
+               comment_ip,
+               comment_parent_id,
+               comment_base_id,
+               comment_create_time,
+               comment_place,
+               comment_type,
+               comment_article_id
+        from blog_comment
+        where comment_article_id = #{articleId}
+    </select>
+
+    <select id="getTheTotalNumberOfCommentsByArticle" resultType="int">
+        select count(*)
+        from blog_comment
+        where comment_type = 1
+          and comment_article_id = #{articleId}
+    </select>
+
+</mapper>

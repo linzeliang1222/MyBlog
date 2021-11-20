@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="author" content="linzeliang.top"/>
+    <meta name="robots" content="all"/>
+    <title>文章列表 - linzeliang</title>
+    <link rel="stylesheet" th:href="@{font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{css/master.css}"/>
+    <link rel="stylesheet" th:href="@{css/gloable.css}"/>
+    <link rel="stylesheet" th:href="@{css/nprogress.css}"/>
+    <link rel="stylesheet" th:href="@{css/blog.css}"/>
+</head>
+<body>
+    <div class="header">
+    </div>
+    <header class="gird-header">
+        <div class="header-fixed">
+            <div class="header-inner">
+                <span class="header-logo" id="logo">linzeliang</span>
+                <nav class="nav" id="nav">
+                    <ul>
+                        <li><a th:href="@{index.html}">首页</a></li>
+                        <li><a th:href="@{article.html}">博客</a></li>
+                        <li><a th:href="@{message.html}">留言</a></li>
+                        <li><a th:href="@{link.html}">友链</a></li>
+                    </ul>
+                </nav>
+                <a class="phone-menu">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="doc-container" id="doc-container">
+        <div class="container-fixed">
+            <div class="col-content">
+                <div class="inner">
+                    <article class="article-list bloglist" id="LAY_bloglist">
+                        <div th:each="article : ${articles}">
+                            <section class="article-item zoomIn article">
+                                <span th:if="${article.top}"><div class="fc-flag">置顶</div></span>
+                                <h5 class="title">
+                                    <span class="fc-blue">【原创】</span>
+                                    <a th:href="@{'/read.html?aid=' + ${article.id}}" th:text="${article.title}"></a>
+                                </h5>
+                                <div class="time">
+                                    <span class="day" th:text="${#dates.format(article.createTime, 'dd')}"></span>
+                                    <span class="month fs-18"><span
+                                            th:text="${#dates.format(article.createTime, 'MM')}"></span><span
+                                            class="fs-14">月</span></span>
+                                    <span class="year fs-18 ml10"
+                                          th:text="${#dates.format(article.createTime, 'yyyy')}"></span>
+                                </div>
+                                <div class="content" style="min-height: 90px !important;">
+                                    <span th:text="${article.digest}"></span>
+                                </div>
+                                <div class="read-more">
+                                    <a th:href="@{'/read.html?aid=' + ${article.id}}" class="fc-black f-fwb">继续阅读</a>
+                                </div>
+                                <aside class="f-oh footer">
+                                    <div class="f-fl tags">
+                                        <span class="fa fa-tags fs-16"></span>
+                                        <a class="tag" th:text="${article.tagName}"></a>
+                                    </div>
+                                    <div class="f-fr">
+									<span class="read">
+										<i class="fa fa-eye fs-16"></i>
+										<i class="num" th:text="${article.readCount}"></i>
+									</span>
+                                        <span class="ml20">
+										<i class="fa fa-comments fs-16"></i>
+										<i class="num fc-grey" th:text="${article.commentCount}">1</i>
+									</span>
+                                    </div>
+                                </aside>
+                            </section>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-other">
+                <div class="inner">
+                    <div class="other-item" id="categoryandsearch">
+                        <div class="search">
+                            <form action="article.html" method="get" id="search">
+                                <div class="search-wrap">
+                                    <input type="text" name="keyword" placeholder="输入关键字搜索" autocomplete="off" class="layui-input">
+                                    <span class="search-icon">
+                                        <i class="fa fa-search" onclick="document:search.submit()"></i>
+                                    </span>
+                                </div>
+                            </form>
+                            <ul class="search-result"></ul>
+                        </div>
+                        <ul class="category mt20" id="category">
+                            <li data-index="0" class="slider"></li>
+                            <li data-index="1"><a th:href="@{/article.html}">全部文章</a></li>
+                            <div th:each="tag : ${tags}">
+                                <li th:attr="data-index=${tagStat.index}+2"><a
+                                        th:href="@{'/article.html?tid=' + ${tag.id}}" th:text="${tag.title}"></a></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <!--右边悬浮 平板或手机设备显示-->
+                    <div class="category-toggle"><i class="layui-icon">&#xe603;</i></div>
+                    <div class="article-category">
+                        <div class="article-category-title">分类导航</div>
+                        <div th:each="tag : ${tags}">
+                            <a th:href="@{'/article.html?tid=' + ${tag.id}}" th:text="${tag.title}"></a>
+                        </div>
+                        <div class="f-cb"></div>
+                    </div>
+                    <!--遮罩-->
+                    <div class="blog-mask animated layui-hide"></div>
+                    <div class="other-item">
+                        <h5 class="other-item-title">热门文章</h5>
+                        <div class="inner">
+                            <ul class="hot-list-article">
+                                <li th:each="hotArticle : ${hotArticles}">
+                                    <a th:href="@{'/read.html?aid=' + ${hotArticle.id}}"
+                                       th:text="${hotArticle.title}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="other-item">
+                        <h5 class="other-item-title">置顶推荐</h5>
+                        <div class="inner">
+                            <ul class="hot-list-article">
+                                <li th:each="topRecommend : ${topRecommends}">
+                                    <a th:href="@{'/read.html?aid=' + ${topRecommend.id}}" th:text="${topRecommend.title}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="grid-footer">
+        <div class="footer-fixed">
+            <div class="copyright">
+                <div class="info">
+                    <div class="contact">
+                        <a th:href="@{https://github.com/linzeliang1222}"><i class="fa fa-github"></i></a>
+                        <a title="523543574"><i class="fa fa-qq"></i></a>
+                        <a title="linzeliang1222@gmail.com"><i class="fa fa-envelope"></i></a>
+                    </div>
+                    <p class="mt05">
+                        Copyright &copy; 2021 By linzeliang
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/yss/gloable.js}"></script>
+    <script th:src="@{/js/plugins/nprogress.js}"></script>
+    <script>NProgress.start();</script>
+    <script th:src="@{js/yss/article.js}"></script>
+    <script>
+        window.onload = function () {
+            NProgress.done();
+        };
+    </script>
+</body>
+</html>

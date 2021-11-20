@@ -1,0 +1,80 @@
+{
+  "status": 1,
+  "msg": "ok",
+  "data": [
+    {
+      "id": 1,
+      "name": "个人信息",
+      "icon": "user",
+      "url": "",
+      "children": [
+        {
+          "id": 2,
+          "name": "我的信息",
+          "icon": "",
+          "url": "./pages/user/list.html"
+        },
+        {
+          "id": 3,
+          "name": "修改密码",
+          "icon": "",
+          "url": "./pages/user/update-password.html"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "文章管理",
+      "icon": "read",
+      "url": "",
+      "children": [
+        {
+          "id": 5,
+          "name": "文章列表",
+          "icon": "",
+          "url": "./pages/article/list.html"
+        },
+        {
+          "id": 6,
+          "name": "标签管理",
+          "icon": "",
+          "url": "./pages/article/list-tag.html"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "友链管理",
+      "icon": "chart",
+      "url": "",
+      "children": [
+        {
+          "id": 8,
+          "name": "友链列表",
+          "icon": "",
+          "url": "./pages/link/list.html"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "留言管理",
+      "icon": "form",
+      "url": "",
+      "children": [
+        {
+          "id": 10,
+          "name": "评论列表",
+          "icon": "",
+          "url": "./pages/comment/list.html"
+        },
+        {
+          "id": 11,
+          "name": "留言列表",
+          "icon": "",
+          "url": "./pages/comment/message.html"
+        }
+      ]
+    }
+  ]
+}

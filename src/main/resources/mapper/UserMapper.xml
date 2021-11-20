@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="user">
+        insert into blog_user (user_name,
+                               user_password,
+                               user_nickname,
+                               user_email,
+                               user_registration_time,
+                               user_introduction)
+        values (#{userName},
+                #{userPassword},
+                #{userNickname},
+                #{userEmail},
+                #{userRegistrationTime},
+                '')
+    </insert>
+
+    <update id="updateUser" parameterType="user">
+        update blog_user
+        set user_nickname     = #{userNickname},
+            user_email        = #{userEmail},
+            user_avatar       = #{userAvatar},
+            user_introduction = #{userIntroduction}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserPassword" parameterType="user">
+        update blog_user
+        set user_password = #{userPassword}
+        where user_id = #{userId}
+    </update>
+
+    <select id="getUsersBasedOnId" resultType="user">
+        select user_id,
+               user_name,
+               user_password,
+               user_nickname,
+               user_email,
+               user_avatar,
+               user_registration_time,
+               user_introduction
+        from blog_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="queryUsersBasedOnUserNameAndPassword" resultType="user">
+        select user_id,
+               user_name,
+               user_password,
+               user_nickname,
+               user_email,
+               user_avatar,
+               user_registration_time,
+               user_introduction
+        from blog_user
+        where user_name = #{userName}
+          and user_password = #{userPassword}
+    </select>
+
+    <select id="getAllUsers" resultType="user">
+        select user_id,
+               user_name,
+               user_password,
+               user_nickname,
+               user_email,
+               user_avatar,
+               user_registration_time,
+               user_introduction
+        from blog_user
+    </select>
+
+    <select id="getUserByName" resultType="user">
+        select *
+        from blog_user
+        where user_name = #{name}
+    </select>
+</mapper>

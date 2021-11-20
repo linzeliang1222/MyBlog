@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/mvc
+                           https://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/context
+                           https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置SpringMVC -->
+    <!-- 1: 开启SpringMVC注解模式 -->
+    <!-- 简化配置：
+            (1)自动注册DefaultAnnotationHandleMapping和AnnotationMethodHandleAdapter
+            (2)提供一系列：数据绑定、数字和日期的format @NumberFormat @DataTimeFormat、xml，json默认读写支持
+     -->
+    <mvc:annotation-driven/>
+
+    <!-- 2: servlet-mapping映射路径 -->
+    <!--
+            (1)加入对静态资源的处理
+            (2)允许使用"/"做整体映射
+     -->
+    <mvc:default-servlet-handler/>
+
+    <!-- 3: 配置视图解析器ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".html"/>
+    </bean>
+    <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/templates/"/>
+        <property name="suffix" value=".html"/>
+        <property name="templateMode" value="HTML5"/>
+        <property name="cacheable" value="false"/>
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>
+    <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
+        <property name="enableSpringELCompiler" value="true"/>
+    </bean>
+    <bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="order" value="1"/>
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>
+
+    <!-- 4: 扫描controller相关bean -->
+    <context:component-scan base-package="top.linzeliang.blog.controller"/>
+
+    <!-- 5: 使用swagger2 -->
+    <!-- 将你的SwaggerConfig配置类注入 -->
+    <bean class="top.linzeliang.blog.config.SwaggerConfig"/>
+    <!-- 配置swagger资源不被拦截 -->
+    <mvc:resources mapping="/swagger/**" location="/WEB-INF/swagger/"/>
+</beans>

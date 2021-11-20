@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width"/>
+    <title th:text="${article.articleTitle} + ' - linzeliang'"></title>
+    <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/master.css}"/>
+    <link rel="stylesheet" th:href="@{/css/gloable.css}"/>
+    <link rel="stylesheet" th:href="@{/css/nprogress.css}"/>
+    <link rel="stylesheet" th:href="@{/css/blog.css}"/>
+</head>
+<body>
+    <div class="header">
+    </div>
+    <header class="gird-header">
+        <div class="header-fixed">
+            <div class="header-inner">
+                <span class="header-logo" id="logo">linzeliang</span>
+                <nav class="nav" id="nav">
+                    <ul>
+                        <li><a th:href="@{/index.html}">首页</a></li>
+                        <li class="current"><a th:href="@{/article.html}">博客</a></li>
+                        <li><a th:href="@{/message.html}">留言</a></li>
+                        <li><a th:href="@{/link.html}">友链</a></li>
+                    </ul>
+                </nav>
+                <a class="phone-menu">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="doc-container" id="doc-container">
+        <div class="container-fixed">
+            <div class="col-content" style="width:100%">
+                <div class="inner">
+                    <article class="article-list">
+                        <input type="hidden" id="blogtypeid"/>
+                        <section class="article-item">
+                            <aside class="title" style="line-height:1.5;">
+                                <h4 th:text="${article.articleTitle}"></h4>
+                                <p class="fc-grey fs-14">
+                                    <small>
+                                        作者：<a target="_blank" class="fc-link" th:text="${article.user.userName}"></a>
+                                    </small>
+                                    <small class="ml10">围观群众：<i class="readcount"
+                                                                th:text="${article.articleReadCount}"></i></small>
+                                    <small class="ml10">更新于 <label
+                                            th:text="${#dates.format(article.articleUpdateTime, 'yyyy-MM-dd HH:mm:ss')}"></label>
+                                    </small>
+                                </p>
+                            </aside>
+                            <div class="time mt10" style="padding-bottom:0;">
+                                <span class="day" th:text="${#dates.format(article.articleUpdateTime, 'dd')}"></span>
+                                <span class="month fs-18"><span
+                                        th:text="${#dates.format(article.articleUpdateTime, 'MM')}"></span><small
+                                        class="fs-14">月</small></span>
+                                <span class="year fs-18"
+                                      th:text="${#dates.format(article.articleUpdateTime, 'yyyy')}"></span>
+                            </div>
+                            <div class="content artiledetail"
+                                 style="padding-bottom: 10px;">
+                                <span th:utext="${article.articleContent}"></span>
+                                <div class="copyright mt20">
+                                    <p class="f-toe fc-black">
+                                        非特殊说明，本文版权归 <span style="color: #00C2FF"
+                                                          th:text="${article.user.userName}"></span> 所有，转载请注明出处.
+                                    </p>
+                                    <p class="f-toe">
+                                        本文标题：
+                                        <a th:href="@{'http://localhost:8080/read.html?aid=' + ${article.articleId}}"
+                                           class="r-title" th:text="${article.articleTitle}"></a>
+                                    </p>
+                                    <p class="f-toe">
+                                        本文网址：
+                                        <a th:href="@{'http://47.103.132.234/read.html?aid=' + ${article.articleId}}"
+                                           th:text="'http://47.103.132.234/read.html?aid=' + ${article.articleId}"></a>
+                                    </p>
+                                </div>
+                                <div id="aplayer" style="margin:5px 0"></div>
+                                <h6>延伸阅读</h6>
+                                <ol class="b-relation">
+                                    <li class="f-toe" th:each="articleByExtend : ${articlesByExtend}"><a
+                                            th:href="@{'http://localhost:8080/read.html?aid=' + ${articleByExtend.id}}"
+                                            th:text="${articleByExtend.title}"></a></li>
+                                </ol>
+                            </div>
+                            <div class="f-cb"></div>
+                            <div class="mt20 f-fwn fs-24 fc-grey comment"
+                                 style="border-top: 1px solid #e1e2e0; padding-top: 20px;">
+                            </div>
+                            <fieldset class="layui-elem-field layui-field-title">
+                                <legend>发表评论</legend>
+                                <div class="layui-field-box">
+                                    <div class="leavemessage" style="text-align:initial">
+
+                                        <form class="layui-form">
+                                            <input type="hidden" name="articleId" id="articleId" th:value="${article.articleId}">
+                                            <div class="layui-form-item">
+                                                <input type="text" name="username" class="layui-input" autocomplete="off"
+                                                       placeholder="请输入昵称" lay-verify="username">
+                                            </div>
+                                            <div class="layui-form-item layui-form-text">
+                                                <textarea placeholder="请输入内容" class="layui-textarea" name="content" lay-verify="replyContent"></textarea>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <button class="layui-btn" lay-submit lay-filter="addComment">立即提交</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <ul class="blog-comment" id="blog-comment" page-count="4">
+                                <li th:each="commentList : ${commentLists}">
+                                    <div class="comment-parent">
+                                        <a name="remark-374"></a>
+                                        <img src="https://thirdqq.qlogo.cn/qqapp/101465933/7627F745B95BFAC18C6C481FE72B4EB1/100" th:alt="${commentList.username}">
+                                        <div class="info">
+                                            <span class="username" th:text="${commentList.username}" style="font-size: 16px;"></span>
+                                        </div>
+                                        <div class="comment-content" th:utext="${commentList.content}"></div>
+                                        <p class="info info-footer">
+                                            <span class="comment-time" th:text="${#dates.format(commentList.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                            <a href="javascript:;" class="btn-reply" th:attr="data-targetname=${commentList.username},data-targetid=${commentList.id},data-baseid=${commentList.id},data-articleid=${article.articleId}">回复</a>
+                                        </p>
+                                    </div>
+                                    <hr>
+                                    <div class="comment-child" th:each="child : ${commentList.childMessage}">
+                                        <a name="reply-375"></a>
+                                        <img src="https://thirdqq.qlogo.cn/qqapp/101465933/7627F745B95BFAC18C6C481FE72B4EB1/100" th:alt="${child.username}">
+                                        <div class="info">
+                                            <span class="username" th:text="${child.username}" style="font-size: 16px;"></span>
+                                            <span style="padding-right:0;margin-left:-5px;">回复</span>
+                                            <span class="username" th:text="${child.parentUsername}"></span>
+                                            <span th:utext="${child.content}"></span>
+                                        </div>
+                                        <p class="info"><span class="comment-time" th:text="${#dates.format(child.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                            <a href="javascript:;" class="btn-reply" th:attr="data-targetname=${child.username},data-targetid=${child.id},data-baseid=${commentList.id},data-articleid=${article.articleId}">回复</a>
+                                        </p>
+                                    </div>
+                                    <div class="replycontainer layui-hide">
+                                        <form class="layui-form" action="">
+                                            <input type="hidden" name="baseId">
+                                            <input type="hidden" name="targetId">
+                                            <input type="hidden" name="articleId">
+                                            <div class="layui-form-item">
+                                                <input type="text" name="username" class="layui-input" placeholder="请输入昵称"
+                                                       lay-verify="username">
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <textarea name="replyContent" lay-verify="replyContent" placeholder="请输入回复内容"
+                                              class="layui-textarea" style="min-height:80px;"></textarea>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <button class="layui-btn layui-btn-xs" lay-submit="formReply"
+                                                        lay-filter="formReply">提交
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </li>
+                            </ul>
+                        </section>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="grid-footer">
+        <div class="footer-fixed">
+            <div class="copyright">
+                <div class="info">
+                    <div class="contact">
+                        <a th:href="@{https://github.com/linzeliang1222}"><i class="fa fa-github"></i></a>
+                        <a title="523543574"><i class="fa fa-qq"></i></a>
+                        <a title="linzeliang1222@gmail.com"><i class="fa fa-envelope"></i></a>
+                    </div>
+                    <p class="mt05">
+                        Copyright &copy; 2021 By linzeliang
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/yss/gloable.js}"></script>
+    <script th:src="@{/js/plugins/nprogress.js}"></script>
+    <script th:src="@{/js/read.js}"></script>
+    <script>
+        layui.use(['element', 'jquery', 'form', 'layedit', 'flow'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+
+            form.on('submit(addComment)', function (data) {
+                $.post(
+                    "/api/comment/comment/add",
+                    {
+                        "commentUsername": data.field['username'],
+                        "commentContent": data.field['content'],
+                        "commentArticleId": data.field['articleId']
+                    },
+                    function (data) {
+                        if (data && data['code'] === 0) {
+                            layer.msg(
+                                '评论成功！', {
+                                    icon: 1,
+                                    time: 1000
+                                });
+                        } else {
+                            layer.msg(
+                                '评论出错！', {
+                                    icon: 5,
+                                    time: 1000
+                                });
+                        }
+                        setTimeout(function () {
+                            window.parent.location.reload();
+                        }, 1000);
+                    }
+                );
+                return false;
+            });
+        })
+    </script>
+    <script>NProgress.start();</script>
+    <script>
+        window.onload = function () {
+            NProgress.done();
+        };
+    </script>
+</body>
+</html>

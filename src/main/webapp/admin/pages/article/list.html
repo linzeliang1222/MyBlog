@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>博客后台管理 - 文章管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/weadmin.css">
+    <style type="text/css">
+        .layui-form-switch {
+            width: 55px;
+        }
+
+        .layui-form-switch em {
+            width: 40px;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weadmin-nav">
+    <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">文章管理</a>
+        <a><cite>文章列表</cite></a>
+    </span>
+        <a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right"
+           href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <div class="weadmin-body">
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 we-search">
+                文章搜索：
+                <div class="layui-inline">
+                    <input type="text" name="keyword" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+                </div>
+                <button class="layui-btn" lay-submit lay-filter="search">
+                    <i class="layui-icon layui-icon-search"></i>
+                </button>
+            </form>
+        </div>
+        <div class="weadmin-block demoTable">
+            <button class="layui-btn layui-btn-danger" data-type="getCheckData">
+                <i class="layui-icon layui-icon-delete"></i>批量删除
+            </button>
+            <button class="layui-btn" onclick="WeAdminShow('发布文章', './add-article.html', 800, 500)">
+                <i class="layui-icon layui-icon-add-circle-fine"></i>发布文章
+            </button>
+        </div>
+        <table class="layui-hide" id="articleList"></table>
+
+        <script type="text/html" id="topTpl">
+            <input type="checkbox" name="show" lay-skin="switch" lay-filter="top" lay-text="已置顶|未置顶" value="{{d.id}}" {{
+                   d.top== 1 ? 'checked' : '' }}>
+        </script>
+
+        <script type="text/html" id="tableId">
+            {{(d.LAY_TABLE_INDEX+1)}}
+        </script>
+
+        <script type="text/html" id="operateTpl">
+            <a title="编辑" onclick="WeAdminEdit('编辑','./update-article.html', '{{d.id}}', 800, 500)" href="javascript:;">
+                <i class="layui-icon layui-icon-edit"></i>
+            </a>
+            <a title="删除" onclick="member_del(this,'{{d.id}}')" href="javascript:;">
+                <i class="layui-icon layui-icon-delete"></i>
+            </a>
+        </script>
+        <script src="../../lib/layui/layui.js" charset="utf-8"></script>
+        <script src="list.js" type="text/javascript" charset="utf-8"></script>
+    </div>
+</body>
+</html>

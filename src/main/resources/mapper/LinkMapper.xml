@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.LinkMapper">
+
+    <insert id="insertLink" parameterType="link">
+        insert into blog_link (link_name,
+                               link_site,
+                               link_avatar,
+                               link_description,
+                               link_create_time,
+                               link_user_id)
+        values (#{linkName},
+                #{linkSite},
+                #{linkAvatar},
+                #{linkDescription},
+                #{linkCreateTime},
+                #{linkUserId})
+    </insert>
+
+    <delete id="deleteLinkById" parameterType="int">
+        delete
+        from blog_link
+        where link_id = #{linkId}
+    </delete>
+
+    <select id="listLinksByUid" resultType="link">
+        select link_id, link_name, link_site, link_avatar, link_description, link_create_time, link_user_id
+        from blog_link
+        where link_user_id = #{userId}
+    </select>
+
+    <select id="listLinks" resultType="link">
+        select link_id, link_name, link_site, link_avatar, link_description, link_create_time, link_user_id
+        from blog_link
+    </select>
+
+    <select id="queryLinkById" resultType="link">
+        select link_id, link_name, link_site, link_avatar, link_description, link_create_time, link_user_id
+        from blog_link
+        where link_id = #{linkId}
+    </select>
+
+    <update id="updateLink" parameterType="link">
+        update
+            blog_link
+        set link_name        = #{linkName},
+            link_site        = #{linkSite},
+            link_avatar      = #{linkAvatar},
+            link_description = #{linkDescription}
+        where link_id = #{linkId}
+    </update>
+
+    <select id="getTheTotalNumberOfLink" resultType="int">
+        select count(*)
+        from blog_link
+    </select>
+
+    <select id="getTheTotalNumberOfLinksAccordingToUid" resultType="int">
+        select count(*)
+        from blog_link
+        where link_user_id = #{userId}
+    </select>
+
+</mapper>

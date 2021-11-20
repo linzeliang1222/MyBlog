@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.ArticleMapper">
+
+    <sql id="getArticle">
+        select t1.article_id,
+               t1.article_title,
+               t1.article_digest,
+               t1.article_content,
+               t1.article_create_time,
+               t1.article_update_time,
+               t1.article_read_count,
+               t1.article_comment_count,
+               t1.article_set_top,
+               t1.article_deleted,
+               t1.article_ip,
+               t1.article_user_id,
+               t1.article_tag_id,
+               t2.user_id                'user.user_id',
+               t2.user_name              'user.user_name',
+               t2.user_password          'user.user_password',
+               t2.user_nickname          'user.user_nickname',
+               t2.user_email             'user.user_email',
+               t2.user_avatar            'user.user_avatar',
+               t2.user_registration_time 'user.user_registration_time',
+               t2.user_introduction      'user.user_introduction',
+               t3.tag_id                 'tag.tag_id',
+               t3.tag_name               'tag.tag_name',
+               t3.tag_create_time        'tag.tag_create_time'
+        from blog_article t1,
+             blog_user t2,
+             blog_tag t3
+        where t1.article_user_id = t2.user_id
+          and t1.article_tag_id = t3.tag_id
+          and t1.article_deleted = 0
+    </sql>
+
+
+    <insert id="insertArticle" parameterType="article">
+        insert ignore into blog_article (article_title,
+                                         article_digest,
+                                         article_content,
+                                         article_create_time,
+                                         article_update_time,
+                                         article_ip,
+                                         article_user_id,
+                                         article_tag_id)
+        values (#{articleTitle},
+                #{articleDigest},
+                #{articleContent},
+                #{articleCreateTime},
+                #{articleUpdateTime},
+                #{articleIp},
+                #{articleUserId},
+                #{articleTagId})
+    </insert>
+
+    <update id="updateArticle" parameterType="article">
+        update blog_article
+        set article_title       = #{articleTitle},
+            article_digest      = #{articleDigest},
+            article_content     = #{articleContent},
+            article_update_time = #{articleUpdateTime},
+            article_ip          = #{articleIp},
+            article_tag_id      = #{articleTagId}
+        where article_id = #{articleId}
+          and article_user_id = #{articleUserId}
+          and article_deleted = 0
+    </update>
+
+    <update id="deleteArticleById" parameterType="int">
+        update blog_article
+        set article_deleted = 1
+        where article_id = #{articleId}
+    </update>
+
+    <select id="getArticlesById" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_id = #{articleId}
+        and t1.article_deleted = 0
+    </select>
+
+    <select id="listArticlesByUserId" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_user_id = #{userId}
+        and t1.article_deleted = 0
+        order by t1.article_id asc
+    </select>
+
+    <select id="listArticleByTagId" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_tag_id = #{tagId}
+        and t1.article_deleted = 0
+        order by t1.article_set_top desc, t1.article_create_time desc
+    </select>
+
+    <select id="listArticles" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_deleted = 0
+        order by t1.article_set_top desc, t1.article_create_time desc
+    </select>
+
+    <select id="listTopArticles" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_set_top = 1
+        and t1.article_deleted = 0
+        order by t1.article_id asc
+    </select>
+
+    <select id="listTopArticlesAndRecommend" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_set_top = 1
+        and t1.article_deleted = 0
+        order by t1.article_read_count desc
+    </select>
+
+    <select id="listPopularArticles" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_read_count != 0
+        and t1.article_deleted = 0
+        order by t1.article_read_count desc, t1.article_id asc
+    </select>
+
+    <select id="listPopularArticlesByUserId" resultType="article">
+        <include refid="getArticle"/>
+        and t1.article_read_count != 0
+        and t1.article_user_id = #{userId}
+        order by t1.article_read_count desc, t1.article_id asc
+    </select>
+
+    <select id="countTheNumberOfArticles" resultType="int">
+        select count(*)
+        from blog_article
+        where article_deleted = 0
+    </select>
+
+    <update id="updateArticleTopById">
+        update blog_article
+        set article_set_top = 1
+        where article_id = #{articleId}
+    </update>
+
+    <update id="updateArticleNoTopById">
+        update blog_article
+        set article_set_top = 0
+        where article_id = #{articleId}
+    </update>
+
+    <update id="increaseReadingVolumeById">
+        update blog_article
+        set article_read_count = article_read_count + 1
+        where article_id = #{articleId}
+    </update>
+
+    <update id="incrementTheNumberOfCommentsById">
+        update blog_article
+        set article_comment_count = article_comment_count + 1
+        where article_id = #{articleId}
+    </update>
+
+    <select id="articleIsDeleted" resultType="int">
+        select count(*)
+        from blog_article
+        where article_id = #{articleId}
+          and article_deleted = 1
+    </select>
+
+    <select id="articleIsTop" resultType="int">
+        select count(*)
+        from blog_article
+        where article_id = #{articleId}
+          and article_set_top = 1
+    </select>
+
+    <select id="searchArticles" resultType="article">
+        <include refid="getArticle"/>
+        and article_title like concat('%', #{keyword}, '%')
+        and article_deleted = 0
+        order by article_set_top desc
+    </select>
+
+    <select id="countTheNumberOfArticlesByKeyword" resultType="int">
+        select count(*)
+        from blog_article
+        where article_title like concat('%', #{keyword}, '%')
+          and article_deleted = 0
+    </select>
+
+</mapper>

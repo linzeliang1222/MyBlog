@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.linzeliang.blog.mapper.TagMapper">
+
+    <select id="getTheTotalNumberOfTags" resultType="int">
+        select count(*)
+        from blog_tag
+    </select>
+
+    <insert id="insertTags" parameterType="tag">
+        insert into blog_tag (tag_name, tag_create_time)
+        values (#{tagName}, #{tagCreateTime})
+    </insert>
+
+    <delete id="deleteTags" parameterType="int">
+        delete
+        from blog_tag
+        where tag_id = #{tagId}
+    </delete>
+
+    <update id="updateTags" parameterType="tag">
+        update blog_tag
+        set tag_name = #{tagName}
+        where tag_id = #{tagId}
+    </update>
+
+    <select id="queryAllTags" resultType="tag">
+        select tag_id, tag_name, tag_create_time
+        from blog_tag
+    </select>
+
+    <select id="queryTagsById" resultType="tag">
+        select tag_id, tag_name, tag_create_time
+        from blog_tag
+        where tag_id = #{tagId}
+    </select>
+    
+    <select id="countTheNumberOfArticles" resultType="int">
+        select count(*)
+        from blog_tag
+    </select>
+
+</mapper>
